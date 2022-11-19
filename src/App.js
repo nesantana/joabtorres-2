@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [cep, setCep] = useState('')
+  const [valorBuscado, setValorBuscado] = useState({})
+
+  const buscarApi = () => {
+    if (cep.length === 8 || (cep.length === 9 && cep.includes('-'))) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(data => data.json())
+      .then(data => setValorBuscado(data))
+
+      return
+    }
+
+    alert('Opss, parece que seu CEP não é assim. Corrija e tente novamente')
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <input
+          placeholder='Digite aqui seu CEP'
+          value={cep}
+          onChange={(evento) => setCep(evento.target.value)}
+        />
+        <button onClick={buscarApi}>Buscar</button>
       </header>
+      { valorBuscado.cep }
     </div>
   );
 }
